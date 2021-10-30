@@ -10,7 +10,7 @@ def make_batch_and_line(sku, batch_qty, line_qty):
 
 
 def test_can_allocate_if_available_greater_than_required():
-    large_batch, small_line = make_batch_and_line("ELEGANT-LAMP", 20, 2) # sku, batch qty, line qty
+    large_batch, small_line = make_batch_and_line("ELEGANT-LAMP", 20, 2)  # sku, batch qty, line qty
     assert large_batch.can_allocate(small_line)
 
 
@@ -30,10 +30,19 @@ def test_cannot_allocate_if_skus_do_not_match():
     # sku가 서로 다른 테스트 케이스.
     assert batch.can_allocate(different_sku_line) is False
 
+
 def test_can_only_deallocate_allocated_lines():
     batch, unallocated_line = make_batch_and_line('흔들의자', 20, 2)
-    batch.delloacte(unallocated_line)
+    batch.deallocate(unallocated_line)
     assert batch.available_quantity == 20
+
+
+def test_allocation_is_idempotent():
+    # 중복해서 allocate가 되지 않는지 테스트
+    batch, line = make_batch_and_line("걍가구", 20, 2)
+    batch.allocate(line)
+    batch.allocate(line)
+    assert batch.available_quantity == 18
 
 
 if __name__ == '__main__':
@@ -41,3 +50,5 @@ if __name__ == '__main__':
     test_cannot_allocate_if_available_smaller_than_required()
     test_can_allocate_if_available_equal_to_required()
     test_cannot_allocate_if_skus_do_not_match()
+    test_can_only_deallocate_allocated_lines()
+    test_allocation_is_idempotent()
