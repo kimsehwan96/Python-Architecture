@@ -1,6 +1,7 @@
 import dataclasses
 from datetime import date
 from typing import Optional
+
 @dataclasses.dataclass(frozen=True)
 class OrderLine:
     orderId: str
